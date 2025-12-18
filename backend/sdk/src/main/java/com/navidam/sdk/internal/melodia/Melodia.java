@@ -29,6 +29,10 @@ public class Melodia {
         return this;
     }
 
+    public String titulo() {
+        return titulo;
+    }
+
     public Melodia tempo(int bpm) {
         this.bpm = bpm;
         return this;
