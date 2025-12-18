@@ -1,7 +1,26 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import { useState, useEffect } from "react";
+import type { Persona } from "@/types/persona";
 
 export default function Postal() {
+    const [personas, setPersonas] = useState<Persona[]>([]);
+    const [selectedPersona, setSelectedPersona] = useState<string>("");
+
+    useEffect(() => {
+        fetchPersonas();
+    }, []);
+
+    const fetchPersonas = async () => {
+        try {
+            const res = await fetch("http://localhost:8080/personas");
+            const data = await res.json();
+            setPersonas(data);
+        } catch (error) {
+            console.error("Error al cargar personas:", error);
+        }
+    };
+
     return (
         <>
         <div className="fixed inset-0 -z-10">
@@ -28,12 +47,21 @@ export default function Postal() {
                             <div className="grid md:grid-cols-2 gap-4">
                                 <div className="md:col-span-2">
                                     <label className="text-sm text-slate-700">Destinatario</label>
-                                    <select className="mt-1 w-full px-4 py-3 rounded-2xl bg-white border border-slate-200 outline-none focus:ring-2 focus:ring-red-300">
-                                        <option>[React: listado de personas]</option>
+                                    <select 
+                                        value={selectedPersona}
+                                        onChange={(e) => setSelectedPersona(e.target.value)}
+                                        className="mt-1 w-full px-4 py-3 rounded-2xl bg-white border border-slate-200 outline-none focus:ring-2 focus:ring-red-300"
+                                    >
+                                        <option value="">Selecciona un destinatario...</option>
+                                        {personas.map(p => (
+                                            <option key={p.id} value={p.id}>{p.nombre} ({p.email})</option>
+                                        ))}
                                     </select>
-                                    <p className="mt-2 text-xs text-slate-500">
-                                        React mostrará aquí el nombre y email del destinatario seleccionado.
-                                    </p>
+                                    {selectedPersona && personas.find(p => p.id === selectedPersona) && (
+                                        <p className="mt-2 text-xs text-slate-500">
+                                            Enviando a: <strong>{personas.find(p => p.id === selectedPersona)?.email}</strong>
+                                        </p>
+                                    )}
                                 </div>
 
                                 <div>
@@ -63,7 +91,7 @@ export default function Postal() {
                                 </div>
                                 <div>
                                     <label className="text-sm text-slate-700">[Campo requerido 2]</label>
-                                    <textarea rows="4" class="mt-1 w-full px-4 py-3 rounded-2xl bg-white border border-slate-200 outline-none focus:ring-2 focus:ring-red-300" placeholder="..."></textarea>
+                                    <textarea rows={4} className="mt-1 w-full px-4 py-3 rounded-2xl bg-white border border-slate-200 outline-none focus:ring-2 focus:ring-red-300" placeholder="..."></textarea>
                                 </div>
                             </div>
 

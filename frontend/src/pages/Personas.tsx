@@ -35,7 +35,7 @@ export default function Personas() {
     }, []);
 
     const handleDelete = async (id: string) => {
-        const result = await confirmationAlert('¿Estás seguro de que deseas eliminar este coche?', 'Esta acción no se puede deshacer.');
+        const result = await confirmationAlert('¿Estás seguro de que deseas eliminar esta persona?', 'Esta acción no se puede deshacer.');
         if (!result.isConfirmed) return;
         await fetch(`http://localhost:8080/personas/${id}`, {
             method: "DELETE",
