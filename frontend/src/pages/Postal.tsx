@@ -63,7 +63,7 @@ export default function Postal() {
                                 </div>
                                 <div>
                                     <label className="text-sm text-slate-700">[Campo requerido 2]</label>
-                                    <textarea rows="4" class="mt-1 w-full px-4 py-3 rounded-2xl bg-white border border-slate-200 outline-none focus:ring-2 focus:ring-red-300" placeholder="..."></textarea>
+                                    <textarea rows={4} className="mt-1 w-full px-4 py-3 rounded-2xl bg-white border border-slate-200 outline-none focus:ring-2 focus:ring-red-300" placeholder="..."></textarea>
                                 </div>
                             </div>
 
