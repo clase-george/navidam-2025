@@ -29,10 +29,10 @@ export default function Home() {
                 </p>
 
                 <div className="flex flex-wrap gap-3 pt-2">
-                    <Link to="personas.html" className="inline-flex items-center gap-2 px-4 py-3 rounded-2xl bg-slate-900 text-white hover:bg-slate-800 font-semibold">
+                    <Link to="/personas" className="inline-flex items-center gap-2 px-4 py-3 rounded-2xl bg-slate-900 text-white hover:bg-slate-800 font-semibold">
                     👥 Gestionar personas
                     </Link>
-                    <Link to="postal.html" className="inline-flex items-center gap-2 px-4 py-3 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-extrabold">
+                    <Link to="/postal" className="inline-flex items-center gap-2 px-4 py-3 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-extrabold">
                     🚀 Crear postal
                     </Link>
                 </div>

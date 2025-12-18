@@ -16,13 +16,13 @@ export default function Header() {
             </Link>
 
             <nav className="flex items-center gap-2">
-            <Link to="Personas.tsx" className="px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-sm">
+            <Link to="/personas" className="px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-sm">
                 Personas
             </Link>
-            <Link to="AltaPersona.tsx" className="px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-sm">
+            <Link to="/altapersona" className="px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-sm">
                 Alta
             </Link>
-            <Link to="Postal.tsx" className="px-3 py-2 rounded-xl bg-red-500 hover:bg-red-600 text-white font-extrabold text-sm">
+            <Link to="/postal" className="px-3 py-2 rounded-xl bg-red-500 hover:bg-red-600 text-white font-extrabold text-sm">
                 Enviar postal
             </Link>
             </nav>
