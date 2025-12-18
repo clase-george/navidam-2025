@@ -1,5 +1,6 @@
 package com.navidam.sdk.api;
 
+import com.navidad.sdk.api.melodias.Salir;
 import com.navidam.sdk.internal.html.Plantilla;
 import com.navidam.sdk.internal.melodia.Melodia;
 
@@ -18,7 +19,7 @@ public class NaviDAMAPI {
 
     public List<Melodia> listadoMelodias() {
         return List.of(
-                // LaVacaLola.crear()
+                 Salir.crear()
         );
     }
 
@@ -27,4 +28,5 @@ public class NaviDAMAPI {
                 // new Plantilla("demo").path("demo.html")
         );
     }
+    
 }

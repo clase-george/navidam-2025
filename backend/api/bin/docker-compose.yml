@@ -1,0 +1,109 @@
+services:
+  # -------------------------
+  # BACKEND (Spring Boot)
+  # -------------------------
+  backend:
+    container_name: navidam-backend
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://app-db:5432/navidam
+      SPRING_DATASOURCE_USERNAME: navidam
+      SPRING_DATASOURCE_PASSWORD: navidam
+
+      # URL interna para invocar n8n desde Spring
+      N8N_BASE_URL: http://n8n:5678
+      # ejemplo: /webhook/felicitacion (si lo usáis)
+      N8N_WEBHOOK_PATH: /webhook/felicitacion
+    ports:
+      - "8080:8080"
+    depends_on:
+      - app-db
+      - n8n
+    networks:
+      - navidam-net
+
+  # -------------------------
+  # FRONTEND (React)
+  # -------------------------
+  frontend:
+    container_name: navidam-frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    environment:
+      # Si tu React se construye leyendo variables en build-time:
+      # Ojo: CRA usa REACT_APP_*, Vite usa VITE_*
+      VITE_API_BASE_URL: http://localhost:8080
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - navidam-net
+
+  # -------------------------
+  # N8N DB (Postgres)
+  # -------------------------
+  n8n-db:
+    image: postgres:16-alpine
+    container_name: navidam-n8n-db
+    environment:
+      POSTGRES_DB: n8n
+      POSTGRES_USER: n8n
+      POSTGRES_PASSWORD: n8n
+    volumes:
+      - n8n_db_data:/var/lib/postgresql/data
+    networks:
+      - navidam-net
+
+  # -------------------------
+  # N8N
+  # -------------------------
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: navidam-n8n
+    ports:
+      - "5678:5678"
+    environment:
+      # Seguridad básica
+      N8N_BASIC_AUTH_ACTIVE: "true"
+      N8N_BASIC_AUTH_USER: "admin"
+      N8N_BASIC_AUTH_PASSWORD: "admin"
+
+      # URL pública (para que los webhooks generen URLs coherentes)
+      # En local basta con localhost:
+      N8N_HOST: "localhost"
+      N8N_PORT: "5678"
+      N8N_PROTOCOL: "http"
+
+      # Base de datos de n8n
+      DB_TYPE: "postgresdb"
+      DB_POSTGRESDB_HOST: "n8n-db"
+      DB_POSTGRESDB_PORT: "5432"
+      DB_POSTGRESDB_DATABASE: "n8n"
+      DB_POSTGRESDB_USER: "n8n"
+      DB_POSTGRESDB_PASSWORD: "n8n"
+
+      # Timezone (Madrid)
+      GENERIC_TIMEZONE: "Europe/Madrid"
+      TZ: "Europe/Madrid"
+
+      # Para permitir que n8n llame por HTTP a servicios internos (backend)
+      N8N_SECURE_COOKIE: "false"
+    volumes:
+      - n8n_data:/home/node/.n8n
+    depends_on:
+      - n8n-db
+    networks:
+      - navidam-net
+
+networks:
+  navidam-net:
+
+volumes:
+  app_db_data:
+  n8n_db_data:
+  n8n_data:
