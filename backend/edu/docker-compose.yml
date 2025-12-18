@@ -2,7 +2,51 @@ services:
   # -------------------------
   # BACKEND (Spring Boot)
   # -------------------------
- 
+  backend:
+    container_name: navidam-backend
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://app-db:5432/navidam
+      SPRING_DATASOURCE_USERNAME: navidam
+      SPRING_DATASOURCE_PASSWORD: navidam
+
+      # URL interna para invocar n8n desde Spring
+      N8N_BASE_URL: http://n8n:5678
+      # ejemplo: /webhook/felicitacion (si lo usáis)
+      N8N_WEBHOOK_PATH: /webhook/felicitacion
+    ports:
+      - "8080:8080"
+    depends_on:
+      - app-db
+      - n8n
+    networks:
+      - navidam-net
+
+  # -------------------------
+  # FRONTEND (React)
+  # -------------------------
+  frontend:
+    container_name: navidam-frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    environment:
+      # Si tu React se construye leyendo variables en build-time:
+      # Ojo: CRA usa REACT_APP_*, Vite usa VITE_*
+      VITE_API_BASE_URL: http://localhost:8080
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - navidam-net
+
+  # -------------------------
+  # N8N DB (Postgres)
+  # -------------------------
   n8n-db:
     image: postgres:16-alpine
     container_name: navidam-n8n-db
