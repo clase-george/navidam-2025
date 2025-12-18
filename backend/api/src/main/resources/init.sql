@@ -4,11 +4,11 @@
 DROP TABLE IF EXISTS personas;
 
 -- =========================================
--- 2. Crear tabla TORNEOS
+-- 2. Crear tabla Personas
 -- =========================================
 CREATE TABLE personas
 (
     id       BIGSERIAL PRIMARY KEY,
     nombre   VARCHAR(100) NOT NULL,
-    email    VARCHAR(255) NOT NULL
+    email    VARCHAR(255) NOT NULL UNIQUE
 );
