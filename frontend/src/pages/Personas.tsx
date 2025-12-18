@@ -1,7 +1,66 @@
+import { confirmationAlert, mostrarAlertaEliminar } from "@/components/Alert";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import type { Persona } from "@/types/persona";
+
+import { useEffect, useState } from "react";
 
 export default function Personas() {
+    const[personas, setPersonas] = useState<Persona[]>([]);
+    const[errorFetch,setErrorFetch] = useState<boolean>(false);
+    const[mensajeError,setMensajeError] = useState<string>("");
+    const[loader,setLoader] = useState<boolean>(false); 
+    
+
+    useEffect(() => {
+        console.log("Cargando alumnos...");
+        setErrorFetch(false);
+        setLoader(true);
+        fetch(`http://localhost:8080/personas`,{
+            method: "GET",
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error("Error al cargar las personas.");
+            }
+            return response.json();
+        }).then(data => {
+            setPersonas(data);
+            console.log("Personas cargadas:", data);
+            setLoader(false);
+        }).catch(error => {
+            setErrorFetch(true);
+            setMensajeError(error.message);
+            setLoader(false);
+        });
+    }, []);
+
+    const handleDelete = async (id: string) => {
+        const result = await confirmationAlert('¿Estás seguro de que deseas eliminar este coche?', 'Esta acción no se puede deshacer.');
+        if (!result.isConfirmed) return;
+        await fetch(`http://localhost:8080/personas/${id}`, {
+            method: "DELETE",
+        });
+        setPersonas(prev => prev.filter(persona => persona.id !== id));
+        mostrarAlertaEliminar();
+    }
+
+    if (loader) {
+        return (
+            <main className="flex-1">
+                <div className="min-h-screen flex items-center justify-center px-4">
+                    <div className="w-full max-w-2xl">
+                        <div className="rounded-[2rem] bg-white text-slate-900 shadow-2xl ring-1 ring-black/5 overflow-hidden">
+                            <div className="p-6 md:p-10 text-center">
+                                <p className="text-lg font-semibold">Cargando personas...</p>
+                                <p className="text-sm text-slate-500 mt-2">Un momento, por favor.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        );
+    }
+
     return (
         <>
         <div className="fixed inset-0 -z-10">
@@ -46,38 +105,57 @@ export default function Personas() {
                                     <th className="text-left px-4 py-3 w-[340px]">Acciones</th>
                                 </tr>
                                 </thead>
-
+                        {errorFetch ? (
+                            <div
+                                id="error-panel"
+                                className=" px-4 pt-3 py-4"
+                            >
+                            <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs sm:text-sm text-red-700 flex gap-2">
+                                <span className="mt-0.5">⚠️</span>
+                                <div>
+                                    <p className="font-semibold">{mensajeError}</p>
+                                    <p className="mt-0.5 text-red-700/90">
+                                        Inténtalo de nuevo más tarde o revisa la conexión con el servidor.
+                                    </p>
+                                    </div>
+                                </div>
+                            </div>
+                            ):(
+                               
                                 <tbody className="divide-y divide-slate-200">
-                                <tr className="hover:bg-slate-50">
+                                {personas.map((persona) => (
+                                    <tr key={persona.id} className="hover:bg-slate-50">
                                     <td className="px-4 py-3">
                                         <div className="flex items-center gap-3">
                                             <div className="h-9 w-9 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center">
                                                 <span>👤</span>
                                             </div>
                                             <div>
-                                                <p className="font-semibold">[Nombre]</p>
-                                                <p className="text-xs text-slate-500">ID: [id]</p>
+                                                <p className="font-semibold">{persona.nombre}</p>
+                                                <p className="text-xs text-slate-500">ID: {persona.id}</p>
                                             </div>
                                         </div>
                                     </td>
 
-                                    <td className="px-4 py-3 text-slate-700">[Email]</td>
+                                    <td className="px-4 py-3 text-slate-700">{persona.email}</td>
 
                                     <td className="px-4 py-3">
                                         <div className="flex flex-wrap gap-2">
-                                            <button className="px-3 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 font-semibold text-slate-900">
+                                            <button 
+                                            onClick={() => handleDelete(persona.id)}
+                                            className="px-3 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 font-semibold text-slate-900">
                                                 🗑️ Eliminar
                                             </button>
                                         </div>
                                     </td>
                                 </tr>
+                                ))}
                                 </tbody>
+                                )};
                             </table>
                         </div>
 
-                        <div className="p-6 text-center text-slate-500">
-                            (React mostrará aquí “No hay personas registradas” cuando aplique)
-                        </div>
+                        
                     </section>
                 </div>
             </div>

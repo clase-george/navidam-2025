@@ -1,7 +1,33 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { mostrarAlertaAltaPersona } from "@/components/Alert";
+import { useState } from "react";
 
 export default function AltaPersona() {
+   const[formData, setFormData] = useState({
+         nombre: "",
+         email: ""
+  });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => { 
+    const { name, value } = e.target; 
+    setFormData(prev => ({ ...prev, [name]: value }));
+  }
+
+   const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const personaToSend = {
+        nombre: formData.nombre,
+        email: formData.email
+    };
+    await fetch("http://localhost:8080/personas", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(personaToSend)
+    });
+    mostrarAlertaAltaPersona(personaToSend.nombre);
+    setFormData({ nombre: "", email: "" });
+   }
+
     return (
         <>
         <div className="fixed inset-0 -z-10">
@@ -23,19 +49,30 @@ export default function AltaPersona() {
 
                     </div>
 
-                    <form className="mt-6 space-y-4">
+                    <form onSubmit={handleSubmit} className="mt-6 space-y-4">
                         <div className="grid md:grid-cols-2 gap-4">
                             <div>
                                 <label className="text-sm text-slate-700">Nombre</label>
-                                <input required className="mt-1 w-full px-4 py-3 rounded-2xl bg-white border border-slate-200 outline-none focus:ring-2 focus:ring-red-300"
-                                    placeholder="Ej: Ana"/>
+                                <input 
+                                name="nombre"
+                                required className="mt-1 w-full px-4 py-3 rounded-2xl bg-white border border-slate-200 outline-none focus:ring-2 focus:ring-red-300"
+                                    placeholder="Ej: Ana"
+                                    value={formData.nombre}
+                                    onChange={handleChange}
+                                    />
                                 <p className="text-xs text-slate-500 mt-1">Nombre visible en la plataforma.</p>
                             </div>
 
                             <div>
                                 <label className="text-sm text-slate-700">Email</label>
-                                <input type="email" required className="mt-1 w-full px-4 py-3 rounded-2xl bg-white border border-slate-200 outline-none focus:ring-2 focus:ring-red-300"
-                                    placeholder="ana@email.com"/>
+                                <input 
+                                name="email"
+                                type="email" 
+                                required className="mt-1 w-full px-4 py-3 rounded-2xl bg-white border border-slate-200 outline-none focus:ring-2 focus:ring-red-300"
+                                    placeholder="ana@email.com"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    />
                                 <p className="text-xs text-slate-500 mt-1">Se usará para el envío final.</p>
                             </div>
                         </div>
@@ -46,7 +83,9 @@ export default function AltaPersona() {
                         </div>
 
                         <div className="flex flex-wrap gap-2 pt-2">
-                            <button className="px-5 py-3 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-extrabold">
+                            <button 
+                            type="submit"
+                            className="px-5 py-3 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-extrabold">
                                 Guardar
                             </button>
                             <a href="personas.html" className="px-5 py-3 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-semibold">

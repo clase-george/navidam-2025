@@ -44,4 +44,9 @@ public class PersonaServiceImpl implements PersonaService {
         PersonaEntity personaGuardada = this.personaRepository.save(nuevaPersona);
         return PersonaMapper.toPersonaResponse(personaGuardada);
     }
+
+    @Override
+    public void eliminarPersona(Long id) {
+        this.personaRepository.deleteById(id);
+    }
 }

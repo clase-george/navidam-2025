@@ -1,8 +1,28 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+
 
 export default function Home() {
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const t = setTimeout(() => setLoading(false), 2000);
+        return () => clearTimeout(t);
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-[radial-gradient(1000px_700px_at_15%_10%,rgba(239,68,68,.25),transparent_60%),radial-gradient(900px_700px_at_85%_15%,rgba(255,255,255,.12),transparent_55%),linear-gradient(to_bottom,#020617,#0b1220)]">
+                <div className="flex flex-col items-center gap-4">
+                    <img src="/robotDam.png" alt="robotDam" className="w-126 h-126 object-contain" />
+                    <p className="text-white font-medium">Cargando...</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
        <>
        <div className="fixed inset-0 -z-10">
@@ -27,7 +47,6 @@ export default function Home() {
                 <p className="text-slate-600 text-lg leading-relaxed">
                     Registra personas, elige una plantilla y una melodía, completa los campos requeridos y genera una postal lista para enviar o publicar.
                 </p>
-
                 <div className="flex flex-wrap gap-3 pt-2">
                     <Link to="/personas" className="inline-flex items-center gap-2 px-4 py-3 rounded-2xl bg-slate-900 text-white hover:bg-slate-800 font-semibold">
                     👥 Gestionar personas

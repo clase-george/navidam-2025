@@ -12,4 +12,6 @@ public interface PersonaService {
     PersonaResponse obtenerPersonaPorId(Long id);
 
     PersonaResponse crearPersona(PersonaRequest request);
+
+    void eliminarPersona(Long id);
 }
