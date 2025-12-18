@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Postal de Navidad</title>
+    <style>
+    h1{
+    
+    </style>
+    
+</head>
+<body>
+    <h1>🎄 Feliz Navidad</h1>
+
+    <p th:text="'De: ' + ${m.emisor}"></p>
+    <p th:text="'De: ' + ${m.email}"></p>
+    <p th:text="'De: ' + ${m.fecha}"></p    
+    <p th:text="'Para: ' + ${m.nombre} + ${ m.apellido}"></p>
+    <p th:text="${m.centro}"></p>
+    <p th:text="${m.tipo_postal}"></p>
+    <p th:text="${m.mensaje_personalizado}"></p>
+
+    <footer>
+        <small>Generado con NaviDAM</small>
+    </footer>
+</body>
+</html>
